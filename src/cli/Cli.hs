@@ -7,7 +7,6 @@ import           Data.Maybe
 import           Posts
 import           Printer
 import           System.Environment as Env
-import           System.FilePath
 import           System.IO          ()
 
 type Command = [String] -> IO ()
@@ -33,11 +32,17 @@ help = logCmd "help"
 
 posts :: Command
 posts [] = do
-  fileNames <- findPosts "/opt/life/content/post/travel"
-  putStr $ (extractFilePath . findFirstPost) fileNames
+  let root = "/opt/life/content/post/travel"
+  fileNames <- findPosts root
+  content <- readFile $ root ++ "/" ++ (extractFilePath . findFirstPost) fileNames
+  print $ countWords content
+  return ()
+
+countWords :: String -> Int
+countWords = length . words
 
 findFirstPost :: [FilePath] -> Maybe FilePath
-findFirstPost = find (\x -> takeExtension x == ".md")
+findFirstPost = find isMarkdown
 
 extractFilePath :: Maybe FilePath -> FilePath
 extractFilePath = fromMaybe ""
