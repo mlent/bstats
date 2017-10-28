@@ -5,13 +5,19 @@ module Cli
 import           Data.List()
 import           Data.Maybe
 import           Printer
+import           Posts
 import           System.Environment as Env
-import           System.IO()
+import           System.IO ()
 
 type Command = [String] -> IO ()
 
+run :: IO ()
+run = do
+  (cmd:args) <- Env.getArgs
+  findCommand cmd args
+
 commandList :: [(String, Command)]
-commandList = [("help", help)]
+commandList = [("help", help), ("posts", posts)]
 
 findCommand :: String -> Command
 findCommand cmd = fromMaybe unknown $ lookup cmd commandList
@@ -24,10 +30,10 @@ unknown args = putStr $ nl (unwords output)
 help :: Command
 help = logCmd "help"
 
-run :: IO ()
-run = do
-  (cmd:args) <- Env.getArgs
-  findCommand cmd args
+posts :: Command
+posts [] = do
+  fileNames <- findPosts "/opt/life/content/post/travel"
+  putStr $ unwords fileNames
 
 logCmd :: String -> Command
 logCmd cmd args = putStr $ nl (unwords output)
