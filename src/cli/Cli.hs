@@ -2,11 +2,12 @@ module Cli
   ( run
   ) where
 
-import           Data.List          ()
+import           Data.List
 import           Data.Maybe
 import           Posts
 import           Printer
 import           System.Environment as Env
+import           System.FilePath
 import           System.IO          ()
 
 type Command = [String] -> IO ()
@@ -33,7 +34,13 @@ help = logCmd "help"
 posts :: Command
 posts [] = do
   fileNames <- findPosts "/opt/life/content/post/travel"
-  putStr $ unwords fileNames
+  putStr $ (extractFilePath . findFirstPost) fileNames
+
+findFirstPost :: [FilePath] -> Maybe FilePath
+findFirstPost = find (\x -> takeExtension x == ".md")
+
+extractFilePath :: Maybe FilePath -> FilePath
+extractFilePath = fromMaybe ""
 
 logCmd :: String -> Command
 logCmd cmd args = putStr $ nl (unwords output)
