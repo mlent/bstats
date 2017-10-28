@@ -2,11 +2,11 @@ module Cli
   ( run
   ) where
 
-import           Data.List
+import           Data.List()
 import           Data.Maybe
 import           Printer
 import           System.Environment as Env
-import           System.IO
+import           System.IO()
 
 type Command = [String] -> IO ()
 
@@ -17,7 +17,9 @@ findCommand :: String -> Command
 findCommand cmd = fromMaybe unknown $ lookup cmd commandList
 
 unknown :: Command
-unknown args = putStr "Unknown command"
+unknown args = putStr $ nl (unwords output)
+  where
+    output = ["Unknown command: ", unwords args]
 
 help :: Command
 help = logCmd "help"
