@@ -1,8 +1,8 @@
-module Posts 
+module Posts
   ( findPosts
   ) where
 
-import System.Directory
+import           System.Directory
 
 findPosts :: FilePath -> IO [FilePath]
 findPosts = getDirectoryContents
