@@ -2,12 +2,12 @@ module Cli
   ( run
   ) where
 
-import           Data.List()
+import           Data.List          ()
 import           Data.Maybe
-import           Printer
 import           Posts
+import           Printer
 import           System.Environment as Env
-import           System.IO ()
+import           System.IO          ()
 
 type Command = [String] -> IO ()
 
