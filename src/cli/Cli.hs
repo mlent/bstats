@@ -2,11 +2,11 @@ module Cli
   ( run
   ) where
 
-import System.Environment as Env
-import System.IO
-import Data.List
-import Data.Maybe
-import Printer
+import           Data.List
+import           Data.Maybe
+import           Printer
+import           System.Environment as Env
+import           System.IO
 
 type Command = [String] -> IO ()
 
@@ -22,14 +22,12 @@ unknown args = putStr "Unknown command"
 help :: Command
 help = logCmd "help"
 
+run :: IO ()
 run = do
   (cmd:args) <- Env.getArgs
   findCommand cmd args
 
 logCmd :: String -> Command
 logCmd cmd args = putStr $ nl (unwords output)
-  where output = [ "calling"
-                 , cmd
-                 , "with"
-                 , unwords args
-                 ]
+  where
+    output = ["calling", cmd, "with", unwords args]
