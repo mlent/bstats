@@ -19,9 +19,9 @@ isMarkdown :: FilePath -> Bool
 isMarkdown fp = takeExtension fp == ".md"
 
 splitFrontMatterAndBody :: String -> (String, String)
-splitFrontMatterAndBody = toTuple . splitBody
+splitFrontMatterAndBody = toTuple . splitPost
   where
-    splitBody content = map trim . filter notEmpty $ splitOn "+++" content
+    splitPost = map trim . filter notEmpty . splitOn "+++"
     toTuple [] = ("", "")
     toTuple [x] = (x, "")
     toTuple (x:xs) = (x, unwords xs)
