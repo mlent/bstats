@@ -4,6 +4,7 @@ module Spec
 
 import Test.Tasty
 import Test.Tasty.HUnit
+import Data.Map
 import Posts
 
 content :: String
@@ -20,6 +21,10 @@ suite = testGroup "Posts"
     [
       testCase "extracts the body from a post" extractPostBody1
     ]
+  , testGroup "countWords"
+    [
+      testCase "count number of occurrences of each word" countWords1
+    ]
   ]
 
 extractFrontmatter1 :: Assertion
@@ -33,3 +38,9 @@ extractPostBody1 = expected @=? actual
   where
     actual = extractPostBody content
     expected = "This is my body."
+
+countWords1 :: Assertion
+countWords1 = expected @=? actual
+  where
+    actual = countWords "Apples apples bananas"
+    expected = fromList [("apples", 2), ("bananas", 1)]
