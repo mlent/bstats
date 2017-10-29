@@ -36,6 +36,8 @@ posts [] = do
   fileNames <- findPosts root
   content <- readFile $ root ++ "/" ++ (extractFilePath . findFirstPost) fileNames
   print $ countWords content
+  print $ extractFrontmatter content
+  print $ extractPostBody content
   return ()
 
 countWords :: String -> Int
