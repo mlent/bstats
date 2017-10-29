@@ -35,13 +35,9 @@ posts [] = do
   let root = "/opt/life/content/post/travel"
   fileNames <- findPosts root
   content <- readFile $ root ++ "/" ++ (extractFilePath . findFirstPost) fileNames
-  print $ countWords content
   print $ extractFrontmatter content
   print $ extractPostBody content
   return ()
-
-countWords :: String -> Int
-countWords = length . words
 
 findFirstPost :: [FilePath] -> Maybe FilePath
 findFirstPost = find isMarkdown
