@@ -13,6 +13,8 @@ import           Data.List as List
 import           Data.Char
 import           Data.Map as Map
 import           Data.Maybe
+import Control.Monad  (join)
+import Data.Bifunctor (bimap)
 
 findPosts :: FilePath -> IO [FilePath]
 findPosts = getDirectoryContents
@@ -33,13 +35,12 @@ joinLines :: [String] -> String
 joinLines = intercalate "\n"
 
 splitFrontMatterAndBody :: String -> (String, String)
-splitFrontMatterAndBody s = unlineTuple $ toTuple (indices asLines) asLines
+splitFrontMatterAndBody s = join bimap joinLines $ toTuple (indices asLines) asLines
   where
     asLines = lines s
     indices = findIndices (startsWith "+++")
     toTuple (x:y:_) ls = (takeBetween x y ls, drop (y + 1) ls)
     toTuple xs ls = (ls, [])
-    unlineTuple (x, y) = (joinLines x, joinLines y)
 
 trim :: String -> String
 trim = trimL . trimR
