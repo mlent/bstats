@@ -10,7 +10,6 @@ module Posts
 import           System.Directory
 import           System.FilePath
 import           Data.List as List
-import           Data.List.Split
 import           Data.Char
 import           Data.Map as Map
 import           Data.Maybe
@@ -21,13 +20,26 @@ findPosts = getDirectoryContents
 isMarkdown :: FilePath -> Bool
 isMarkdown fp = takeExtension fp == ".md"
 
+startsWith :: (Eq a) => [a] -> [a] -> Bool
+startsWith x y = x == take (length x) y
+
+slice :: Int -> Int -> [a] -> [a]
+slice start end = take (end - start + 1) . drop start
+
+takeBetween :: Int -> Int -> [a] -> [a]
+takeBetween start end = slice (start + 1) (end - 1)
+
+joinLines :: [String] -> String
+joinLines = intercalate "\n"
+
 splitFrontMatterAndBody :: String -> (String, String)
-splitFrontMatterAndBody = toTuple . splitPost
+splitFrontMatterAndBody s = unlineTuple $ toTuple (indices asLines) asLines
   where
-    splitPost = List.map trim . List.filter notEmpty . splitOn "+++"
-    toTuple [] = ("", "")
-    toTuple [x] = (x, "")
-    toTuple (x:xs) = (x, unwords xs)
+    asLines = lines s
+    indices = findIndices (startsWith "+++")
+    toTuple (x:y:_) ls = (takeBetween x y ls, drop (y + 1) ls)
+    toTuple xs ls = (ls, [])
+    unlineTuple (x, y) = (joinLines x, joinLines y)
 
 trim :: String -> String
 trim = trimL . trimR
