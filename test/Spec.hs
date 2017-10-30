@@ -8,7 +8,7 @@ import Data.Map
 import Posts
 
 content :: String
-content = "+++ category=[\"travel\"] +++ This is my body."
+content = "+++\ncategory=[\"travel\"]\n+++\nThis is my body."
 
 suite :: TestTree
 suite = testGroup "Posts"
