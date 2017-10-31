@@ -23,6 +23,9 @@ suite =
     , testGroup
         "countWords"
         [testCase "count number of occurrences of each word" countWords1]
+    , testGroup
+        "sortWords"
+        [testCase "sort a list of counted words by frequency" sortWords1]
     ]
 
 extractFrontmatter1 :: Assertion
@@ -42,3 +45,9 @@ countWords1 = expected @=? actual
   where
     actual = countWords "Apples apples bananas"
     expected = fromList [("apples", 2), ("bananas", 1)]
+
+sortWords1 :: Assertion
+sortWords1 = expected @=? actual
+  where
+    actual = sortWords [("bananas", 1), ("apples", 2), ("peaches", 10)]
+    expected = [("peaches", 10), ("apples", 2), ("bananas", 1)]

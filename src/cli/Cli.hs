@@ -2,7 +2,7 @@ module Cli
   ( run
   ) where
 
-import           Data.List
+import           Data.List          as List
 import           Data.Maybe
 import           Posts
 import           Printer
@@ -20,7 +20,7 @@ commandList :: [(String, Command)]
 commandList = [("help", help), ("posts", posts)]
 
 findCommand :: String -> Command
-findCommand cmd = fromMaybe unknown $ lookup cmd commandList
+findCommand cmd = fromMaybe unknown $ List.lookup cmd commandList
 
 unknown :: Command
 unknown args = putStr $ nl (unwords output)
@@ -35,8 +35,7 @@ posts [] = do
   let root = "/opt/life/content/post/travel"
   fileNames <- findPosts root
   content <- readFile $ root ++ "/" ++ (extractFilePath . findFirstPost) fileNames
-  print $ extractFrontmatter content
-  print $ extractPostBody content
+  print $ countAndSort $ extractPostBody content
   return ()
 
 findFirstPost :: [FilePath] -> Maybe FilePath
