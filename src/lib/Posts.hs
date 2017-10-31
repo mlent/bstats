@@ -2,6 +2,8 @@ module Posts
   ( countWords
   , extractFrontmatter
   , extractPostBody
+  , countAndSort
+  , sortWords
   , isMarkdown
   , splitFrontMatterAndBody
   , findPosts
@@ -11,7 +13,7 @@ import           Control.Monad    (join)
 import           Data.Bifunctor   (bimap)
 import           Data.Char
 import           Data.List        as List
-import           Data.Map         as Map
+import           Data.Map           as Map
 import           Data.Maybe
 import           System.Directory
 import           System.FilePath
@@ -54,6 +56,15 @@ countWords = List.foldr (count . toLowerCase) Map.empty . words
   where
     count word memo = Map.insert word (currentCount word memo + 1) memo
     currentCount word memo = fromMaybe 0 $ Map.lookup word memo
+
+countAndSort :: String -> [(String, Int)]
+countAndSort content = sortWords asList
+  where
+    counts = countWords content
+    asList = Map.toList counts
+
+sortWords :: Ord b => [(a, b)] -> [(a, b)]
+sortWords = sortBy (\ y z -> compare (snd z) (snd y))
 
 toLowerCase :: String -> String
 toLowerCase = List.map toLower
