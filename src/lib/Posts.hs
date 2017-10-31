@@ -40,19 +40,7 @@ splitFrontMatterAndBody s = join bimap joinLines $ toTuple (indices asLines) asL
     asLines = lines s
     indices = findIndices (startsWith "+++")
     toTuple (x:y:_) ls = (takeBetween x y ls, drop (y + 1) ls)
-    toTuple xs ls = (ls, [])
-
-trim :: String -> String
-trim = trimL . trimR
-
-trimL :: String -> String
-trimL = dropWhile isSpace
-
-trimR :: String -> String
-trimR = reverse . trimL . reverse
-
-notEmpty :: String -> Bool
-notEmpty str = str /= ""
+    toTuple _ ls = (ls, [])
 
 extractFrontmatter :: String -> String
 extractFrontmatter = fst . splitFrontMatterAndBody
