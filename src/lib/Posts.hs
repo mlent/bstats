@@ -7,14 +7,14 @@ module Posts
   , findPosts
   ) where
 
+import           Control.Monad    (join)
+import           Data.Bifunctor   (bimap)
+import           Data.Char
+import           Data.List        as List
+import           Data.Map         as Map
+import           Data.Maybe
 import           System.Directory
 import           System.FilePath
-import           Data.List as List
-import           Data.Char
-import           Data.Map as Map
-import           Data.Maybe
-import Control.Monad  (join)
-import Data.Bifunctor (bimap)
 
 findPosts :: FilePath -> IO [FilePath]
 findPosts = getDirectoryContents
@@ -35,12 +35,13 @@ joinLines :: [String] -> String
 joinLines = intercalate "\n"
 
 splitFrontMatterAndBody :: String -> (String, String)
-splitFrontMatterAndBody s = join bimap joinLines $ toTuple (indices asLines) asLines
+splitFrontMatterAndBody s = mapToStrings $ toTuple (indices asLines) asLines
   where
     asLines = lines s
     indices = findIndices (startsWith "+++")
     toTuple (x:y:_) ls = (takeBetween x y ls, drop (y + 1) ls)
-    toTuple _ ls = (ls, [])
+    toTuple _ ls       = (ls, [])
+    mapToStrings = join bimap joinLines
 
 extractFrontmatter :: String -> String
 extractFrontmatter = fst . splitFrontMatterAndBody
